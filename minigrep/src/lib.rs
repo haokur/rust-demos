@@ -36,27 +36,18 @@ impl Config {
 }
 
 pub fn search(query: String, contents: &str) -> Vec<&str> {
-    let mut results = vec![];
-
-    for line in contents.lines() {
-        if line.contains(&query) {
-            results.push(line);
-        }
-    }
-
-    results
+    contents
+        .lines()
+        .filter(|line| line.contains(&query))
+        .collect()
 }
 
 pub fn search_case_insensitive(query: String, contents: &str) -> Vec<&str> {
-    let mut results = vec![];
-
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query.to_lowercase()) {
-            results.push(line);
-        }
-    }
-
-    results
+    let lower_query = query.to_lowercase();
+    contents
+        .lines()
+        .filter(|line| line.to_lowercase().contains(&lower_query))
+        .collect()
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
