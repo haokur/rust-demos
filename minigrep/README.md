@@ -6,6 +6,11 @@
 cargo test
 ```
 
+- 指定运行测试单个文件
+```shell
+cargo test --test search_test 
+```
+
 ### 正常运行
 
 - 不忽略大小写

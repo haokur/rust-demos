@@ -1,11 +1,6 @@
 use std::error::Error;
 use std::{env, fs};
 
-#[test]
-mod test {
-    pub fn test_search() {}
-}
-
 pub struct Config {
     query: String,
     file_path: String,
