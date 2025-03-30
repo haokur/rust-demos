@@ -1,4 +1,4 @@
-use std::cell::{Ref, RefCell};
+use std::cell::RefCell;
 use std::marker::PhantomPinned;
 use std::pin::Pin;
 use std::ptr::NonNull;
@@ -64,8 +64,11 @@ fn test_gadget() {
 
 #[derive(Debug)]
 struct Node {
+    #[allow(unused)]
     value: i32,
+    #[allow(unused)]
     parent: RefCell<Weak<Node>>,
+    #[allow(unused)]
     children: RefCell<Vec<Rc<Node>>>,
 }
 
@@ -116,6 +119,7 @@ fn test_tree() {
 
 /// 结构体自引用
 #[derive(Debug)]
+#[allow(unused)]
 struct SelfRef<'a> {
     value: String,
 
@@ -136,6 +140,7 @@ impl<'a> WhatAboutThis<'a> {
 
 #[test]
 fn test_struct_ref() {
+    #[allow(unused)]
     let s = "aaa".to_string();
     // 如下直接使用，编译报错
     // let v = SelfRef {
@@ -187,6 +192,6 @@ impl Unmovalbe {
 #[test]
 fn test_pin() {
     let unmoved = Unmovalbe::new("hello".to_string());
-    let mut still_unmoved = unmoved;
+    let still_unmoved = unmoved;
     assert_eq!(still_unmoved.slice, NonNull::from(&still_unmoved.data));
 }

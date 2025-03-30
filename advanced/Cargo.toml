@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+thread_local = "1.1.8"
+lazy_static = "1.5.0"
+tokio = "1.44.1"
