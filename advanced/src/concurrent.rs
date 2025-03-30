@@ -4,7 +4,7 @@ use std::ops::Sub;
 use std::rc::Rc;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Barrier, Condvar, Mutex, MutexGuard, Once, RwLock, mpsc};
-use std::thread::{JoinHandle, sleep, spawn};
+use std::thread::{JoinHandle, sleep};
 use std::time::{Duration, Instant};
 use std::{hint, thread};
 use thread_local::ThreadLocal;
@@ -434,12 +434,12 @@ fn test_mutex_in_multiple_threads_success() {
 #[test]
 fn test_lock_problem() {
     let data = Mutex::new(0);
-    {
-        let d1 = data.lock();
-    }
+    // {
+    //     let d1 = data.lock();
+    // }
     println!("d1 = {:?}", data);
-    let d2 = data.lock();
-    let d3 = data.lock();
+    // let d2 = data.lock();
+    // let d3 = data.lock();
 
     println!("d1 = {:?}", data);
 }
@@ -457,11 +457,12 @@ fn test_lock_problem_in_multiple_threads() {
             for _ in 0..1 {
                 if i_thread % 2 == 0 {
                     let guard: MutexGuard<i64> = MUTEX1.lock().unwrap();
-                    println!("thread {} done", i_thread);
+                    println!("thread {} done {:?}", i_thread,guard);
 
                     sleep(Duration::from_millis(10));
 
                     let guard = MUTEX2.lock().unwrap();
+                    println!("thread {} done {:?}", i_thread,guard);
                 } else {
                     let _guard = MUTEX2.lock().unwrap();
                     println!("thread {} not done", i_thread);
@@ -487,7 +488,7 @@ fn fix_lock_by_try_lock() {
             for _ in 0..1 {
                 if i_thread % 2 == 0 {
                     let guard: MutexGuard<i64> = MUTEX1.lock().unwrap();
-                    println!("thread {} done", i_thread);
+                    println!("thread {} done {:?}", i_thread,guard);
 
                     sleep(Duration::from_millis(10));
 
@@ -623,9 +624,11 @@ fn test_atomic_with_multiple_threads() {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 struct MyBox(*mut u8);
 unsafe impl Send for MyBox {}
 
+#[allow(dead_code)]
 struct MyBox2(*const u8);
 unsafe impl Send for MyBox2 {}
 unsafe impl Sync for MyBox2 {}
