@@ -51,3 +51,10 @@ cargo update -p regex
 ~1.2    := >=1.2.0, <1.3.0
 ~1      := >=1.0.0, <2.0.0
 ```
+
+## cli工具
+- 清理进程
+
+```shell
+cd rcli && cargo run kill "5500,Google Chrome"
+```

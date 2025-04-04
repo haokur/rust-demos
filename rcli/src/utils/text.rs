@@ -52,3 +52,36 @@ pub fn remove_ansi_escape_codes(s: &str) -> String {
     let ansi_escape_regex = regex::Regex::new(r"\x1b\[[0-9;]*m").unwrap();
     ansi_escape_regex.replace_all(s, "").to_string()
 }
+
+pub fn is_valid_port(port_str: &str) -> bool {
+    // 尝试将字符串转换为整数
+    if let Ok(port) = port_str.parse::<u32>() {
+        // 判断端口号是否在有效范围内
+        port <= 65535
+    } else {
+        false
+    }
+}
+#[test]
+fn test_is_valid_port() {
+    assert_eq!(is_valid_port("5500"), true);
+    assert_eq!(is_valid_port("chrome"), false);
+}
+
+#[test]
+fn test_pad_left() {
+    assert_eq!("0001", pad_left("1", 4, '0'));
+    assert_eq!("***1", pad_left("1", 4, '*'));
+}
+pub fn pad_left(input: &str, total_length: usize, pad_char: char) -> String {
+    let padding = total_length.saturating_sub(input.len());
+    let pad_str = pad_char.to_string().repeat(padding);
+    format!("{}{}", pad_str, input)
+}
+
+#[test]
+fn test_parse() {
+    let str = "001";
+    let result: i32 = str.parse().unwrap();
+    println!("{:#?}", result);
+}

@@ -1,5 +1,5 @@
-use clap::{Parser, Subcommand};
 use crate::application::cli::commands;
+use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
 #[command(name = "rcli")]
@@ -13,13 +13,13 @@ pub struct Cli {
 #[derive(Subcommand)]
 pub enum Commands {
     #[command(about = "say hello to who with --name params")]
-    Hello {
-        #[arg(short, long)]
-        name: String,
-    },
+    Hello { name: String },
 
     #[command(about = "test inquire usage")]
     Inquire {},
+
+    #[command(about = "kill progress by port or program name")]
+    Kill { port_or_program_name: String },
 }
 
 pub fn dispatch_command() {
@@ -31,6 +31,11 @@ pub fn dispatch_command() {
         Commands::Inquire {} => {
             commands::inquire_test::run();
         }
+        Commands::Kill {
+            port_or_program_name,
+        } => {
+            let name_or_ports: Vec<&str> = port_or_program_name.split(',').collect();
+            commands::kill::run(name_or_ports);
+        }
     }
 }
-
