@@ -8,5 +8,5 @@ pub fn init_log() {
         Config::default(),
         File::create("my_log.txt").expect("log file can't be created"),
     )
-    .expect("logger init failed");
+        .expect("logger init failed");
 }

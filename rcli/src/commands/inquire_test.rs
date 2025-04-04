@@ -1,4 +1,4 @@
-use crate::utils::{highlight_subsequence, is_subsequence, remove_ansi_escape_codes};
+use crate::utils::text::{highlight_subsequence, is_subsequence, remove_ansi_escape_codes};
 use inquire::validator::Validation;
 use inquire::{Autocomplete, Confirm, CustomUserError, MultiSelect, Password, Select, Text};
 

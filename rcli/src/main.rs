@@ -1,13 +1,13 @@
-mod cli;
-mod logger;
-mod utils;
+mod application;
 mod commands;
+mod helpers;
+mod utils;
 
 fn main() {
-    utils::with_ctrl_c_handler(
+    utils::process::with_ctrl_c_handler(
         || {
-            logger::init_log();
-            cli::dispatch_command();
+            helpers::logger::init_log();
+            application::cli::dispatch_command();
         },
         Some("user interrupt operation"),
     );
