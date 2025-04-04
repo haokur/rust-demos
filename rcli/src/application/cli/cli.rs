@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use crate::commands;
+use crate::application::cli::commands;
 
 #[derive(Parser)]
 #[command(name = "rcli")]
@@ -33,3 +33,4 @@ pub fn dispatch_command() {
         }
     }
 }
+

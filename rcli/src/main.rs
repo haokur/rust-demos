@@ -1,5 +1,4 @@
 mod application;
-mod commands;
 mod helpers;
 mod utils;
 
