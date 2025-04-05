@@ -468,3 +468,63 @@ fn test_result_to_option() {
     let opt = result.map_or_else(|v| 123, |v| v * 2);
     println!("map_or_else error opt is {:?}", opt);
 }
+
+#[test]
+fn test_option_result_callback_handle() {
+    // map提取值。返回Option
+    let opt = Some(2);
+    let doubled = opt.map(|x| x);
+    println!("doubled is {:?}", doubled);
+
+    // and_then，链式操作，返回Option/Result
+    let opt = Some("123");
+    let parsed = opt.and_then(|s| s.parse::<i32>().ok());
+    println!("parsed is {:?}", parsed);
+
+    let result: Result<i32, &str> = Ok(10);
+    let next = result.and_then(|v| if v > 5 { Ok(v) } else { Err("too small") });
+    println!("next is {:?}", next);
+
+    // 直接拿值但不安全的做法：unwrap和expect
+    // expect只是比unwrap多一个自定义错误
+    let opt = Some("hello");
+    let val = opt.unwrap();
+    println!("val is {:?}", val);
+
+    // 以下会直接panic，而且opt2在初始化值是None时，要指定有值时类型
+    // let opt2: Option<i32> = None;
+    // let val = opt2.unwrap();
+    // println!("opt2 is {:?}", opt2);
+
+    // expect会打印错误信息
+    // let mut opt: Option<i32> = None;
+    // let val = opt.expect("hello is None");
+    // println!("val is {:?}", val);
+
+    let result: Result<i32, &str> = Ok(10);
+    let data = result.unwrap();
+    println!("data is {:?}", data);
+
+    // panic报错
+    // let result: Result<i32, &str> = Err("hello");
+    // let data = result.unwrap();
+    // println!("data is {:?}", data);
+
+    let result: Result<i32, &str> = Ok(10);
+    let data = result.expect("get result failed");
+    println!("data is {:?}", data);
+
+    // panic报错
+    // let result: Result<i32, &str> = Err("get result failed");
+    // let data = result.expect("run error when get result");
+    // println!("data is {:?}", data);
+
+    // transpose 反转结构
+    let opt_res: Option<Result<i32, &str>> = Some(Ok(10));
+    let res_opt = opt_res.transpose();
+    println!("res_opt is {:?}", res_opt);
+
+    let opt_res: Result<Option<i32>, &str> = Ok(Some(10));
+    let res_opt = opt_res.transpose();
+    println!("res_opt is {:?}", res_opt);
+}

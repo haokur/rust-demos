@@ -404,6 +404,7 @@ dependencies = [
  "regex",
  "simplelog",
  "sysinfo",
+ "time",
 ]
 
 [[package]]
