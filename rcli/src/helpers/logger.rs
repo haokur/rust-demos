@@ -1,60 +1,44 @@
-use chrono::Local;
-use flexi_logger::{Cleanup, Criterion, DeferredNow, Duplicate, FileSpec, Logger, Naming};
-use log::{LevelFilter, Record, debug, error, info};
-use simplelog::{Config, ConfigBuilder, LevelPadding, WriteLogger};
-use std::fs::{File, OpenOptions};
-use time::OffsetDateTime;
-use time::macros::format_description;
+use crate::configs::consts::IS_PRODUCTION;
+use crate::utils::text;
+use flexi_logger::writers::LogWriter;
+use flexi_logger::{
+    Cleanup, Criterion, DeferredNow, Duplicate, FileSpec, Logger, LoggerHandle, Naming,
+};
+use log::{Record, debug, info};
+use std::sync::{Mutex, OnceLock};
 
-#[test]
-fn test_format_description() {
-    let format = format_description!("[year]-[month]-[day] [hour]:[minute]:[second]");
-    let now = OffsetDateTime::now_local().unwrap_or_else(|_| OffsetDateTime::now_utc());
-    println!("{:?}", now);
-    let formatted = now.format(&format).unwrap();
-    println!("{}", formatted);
+static LOGGER_HANDLE: OnceLock<Mutex<LoggerHandle>> = OnceLock::new();
+
+// 自定义写入
+struct CustomWriter;
+impl LogWriter for CustomWriter {
+    fn write(&self, _now: &mut DeferredNow, _record: &Record) -> std::io::Result<()> {
+        // println!("custom write record is {:?}", record);
+        // 自定日志输出拦截，可推送到服务器，elasticsearch等
+        Ok(())
+    }
+    fn flush(&self) -> std::io::Result<()> {
+        Ok(())
+    }
 }
 
-fn get_config() -> Config {
-    // set_location_level 是否打印代码位置
-    let config = ConfigBuilder::new()
-        .set_time_format_custom(format_description!(
-            "[year]-[month]-[day] [hour]:[minute]:[second]"
-        ))
-        .set_time_offset_to_local()
-        .unwrap()
-        // .set_location_level(LevelFilter::Error)
-        .set_level_padding(LevelPadding::Right)
-        .build();
-
-    config
+// 日志信息脱敏
+fn sanitize_log_record(record: &Record) -> String {
+    let record_str = record.args().to_string();
+    text::desensitization(&record_str)
 }
-
-pub fn init_log() {
-    let config = get_config();
-    let log_file = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open("my_log.txt")
-        .unwrap();
-
-    WriteLogger::init(LevelFilter::Debug, config, log_file).expect("logger init failed");
-}
-
-
-#[test]
-fn test_simple_log() {
-    init_log();
-    info!("test_log");
-    debug!("debug log content");
-    error!("error log content");
-}
-
 
 pub fn init_logger() {
     let format = |write: &mut dyn std::io::Write, now: &mut DeferredNow, record: &Record| {
         let time_str = now.format("%Y-%m-%d %H:%M:%S");
-        write!(write, "{} [{}] {}", time_str, record.level(), record.args()).unwrap();
+        write!(
+            write,
+            "{} [{}] {}",
+            time_str,
+            record.level(),
+            sanitize_log_record(record)
+        )
+        .unwrap();
         Ok(())
     };
 
@@ -64,11 +48,18 @@ pub fn init_logger() {
         .suffix("log");
     // .discriminant(Local::now().format("%Y-%m-%d").to_string());
 
-    Logger::try_with_str("info")
+    let log_level = if *IS_PRODUCTION { "info" } else { "debug" };
+    let duplicate_level = if *IS_PRODUCTION {
+        Duplicate::Info
+    } else {
+        Duplicate::Debug
+    };
+
+    let logger_handle = Logger::try_with_str(log_level)
         .unwrap()
-        .duplicate_to_stdout(Duplicate::All)
+        .duplicate_to_stdout(duplicate_level)
         .format(format)
-        .log_to_file(log_file_path)
+        .log_to_file_and_writer(log_file_path, Box::new(CustomWriter))
         .rotate(
             Criterion::Size(10 * 1024 * 1024),
             Naming::Timestamps,
@@ -77,14 +68,32 @@ pub fn init_logger() {
         .append()
         .start()
         .unwrap();
+
+    LOGGER_HANDLE
+        .set(Mutex::new(logger_handle))
+        .unwrap_or_else(|_| println!("LOGGER_HANDLE set logger_handle error"));
+    info!("logger serve init successful");
+}
+
+#[allow(dead_code)]
+pub fn get_logger_handle() -> &'static Mutex<LoggerHandle> {
+    debug!("get_logger_handle running");
+    LOGGER_HANDLE.get().expect("LOGGER_HANDLE not set")
 }
 
 #[test]
 fn test_flexi_logger() {
     init_logger();
-    // info!("test_log");
-    // debug!("debug log content");
-    // error!("error log content");
-    let test_1k_data: String = std::iter::repeat("x").take(1024).collect();
-    info!("test_1k_data: {}", test_1k_data);
+    info!("user phone number is 13312341234,ip address is 127.0.0.1");
+    // let test_1k_data: String = std::iter::repeat("x").take(1024).collect();
+    // info!("test_1k_data: {}", test_1k_data);
+}
+
+#[test]
+fn test_toggle_log_level() {
+    init_logger();
+    debug!("test_toggle_log_level this will not be seen,because default logger level is info");
+    let mut logger_handle = get_logger_handle().lock().unwrap();
+    logger_handle.parse_and_push_temp_spec("debug").unwrap();
+    debug!("test_toggle_log_level after parse_and_push_temp_spec level to debug");
 }

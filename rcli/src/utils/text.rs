@@ -1,3 +1,4 @@
+use crate::utils::regex::{ip_regex_desensitization, phone_regex_desensitization};
 use log::info;
 
 /// 文本处理
@@ -84,4 +85,20 @@ fn test_parse() {
     let str = "001";
     let result: i32 = str.parse().unwrap();
     println!("{:#?}", result);
+}
+
+// 脱敏字符串中敏感的信息
+// 包括ip和手机号码
+#[test]
+fn test_desensitization() {
+    let str = "phone is 13812341234,ip address is 127.0.0.1";
+    let result = desensitization(&str);
+
+    println!("desensitization result is {}", result);
+}
+pub fn desensitization(value: &str) -> String {
+    let result = ip_regex_desensitization().replace_all(&value, "$1.***.***.$4");
+    let result = phone_regex_desensitization().replace_all(&result, "$1****$2");
+
+    result.into_owned()
 }

@@ -1,4 +1,4 @@
 pub mod text;
 pub mod process;
-pub mod logger;
+pub mod regex;
 
