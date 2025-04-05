@@ -5,7 +5,8 @@ mod helpers;
 mod utils;
 
 fn main() {
-    helpers::logger::init_log();
+    helpers::logger::init_logger();
+    // helpers::logger::init_log();
     info!("starting up");
     // utils::process::with_ctrl_c_handler(
     //     || {

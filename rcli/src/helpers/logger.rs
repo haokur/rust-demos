@@ -1,4 +1,6 @@
-use log::{LevelFilter, debug, error, info};
+use chrono::Local;
+use flexi_logger::{Cleanup, Criterion, DeferredNow, Duplicate, FileSpec, Logger, Naming};
+use log::{LevelFilter, Record, debug, error, info};
 use simplelog::{Config, ConfigBuilder, LevelPadding, WriteLogger};
 use std::fs::{File, OpenOptions};
 use time::OffsetDateTime;
@@ -39,10 +41,50 @@ pub fn init_log() {
     WriteLogger::init(LevelFilter::Debug, config, log_file).expect("logger init failed");
 }
 
+
 #[test]
-fn test_log() {
+fn test_simple_log() {
     init_log();
     info!("test_log");
     debug!("debug log content");
     error!("error log content");
+}
+
+
+pub fn init_logger() {
+    let format = |write: &mut dyn std::io::Write, now: &mut DeferredNow, record: &Record| {
+        let time_str = now.format("%Y-%m-%d %H:%M:%S");
+        write!(write, "{} [{}] {}", time_str, record.level(), record.args()).unwrap();
+        Ok(())
+    };
+
+    let log_file_path = FileSpec::default()
+        .directory("logs")
+        .basename("cli")
+        .suffix("log");
+    // .discriminant(Local::now().format("%Y-%m-%d").to_string());
+
+    Logger::try_with_str("info")
+        .unwrap()
+        .duplicate_to_stdout(Duplicate::All)
+        .format(format)
+        .log_to_file(log_file_path)
+        .rotate(
+            Criterion::Size(10 * 1024 * 1024),
+            Naming::Timestamps,
+            Cleanup::KeepLogFiles(10),
+        )
+        .append()
+        .start()
+        .unwrap();
+}
+
+#[test]
+fn test_flexi_logger() {
+    init_logger();
+    // info!("test_log");
+    // debug!("debug log content");
+    // error!("error log content");
+    let test_1k_data: String = std::iter::repeat("x").take(1024).collect();
+    info!("test_1k_data: {}", test_1k_data);
 }
