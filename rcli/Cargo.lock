@@ -830,11 +830,9 @@ dependencies = [
  "serde",
  "simplelog",
  "sysinfo",
- "time",
  "tokio",
  "tracing",
  "tracing-appender",
- "tracing-log",
  "tracing-subscriber",
  "tracing-test",
 ]
