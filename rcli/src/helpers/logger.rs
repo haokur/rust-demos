@@ -28,6 +28,7 @@ fn sanitize_log_record(record: &Record) -> String {
     text::desensitization(&record_str)
 }
 
+#[allow(dead_code)]
 pub fn init_logger() {
     let format = |write: &mut dyn std::io::Write, now: &mut DeferredNow, record: &Record| {
         let time_str = now.format("%Y-%m-%d %H:%M:%S");
