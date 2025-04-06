@@ -50,7 +50,7 @@ pub fn init_logger() {
 
     let log_level = if *IS_PRODUCTION { "info" } else { "debug" };
     let duplicate_level = if *IS_PRODUCTION {
-        Duplicate::Info
+        Duplicate::None
     } else {
         Duplicate::Debug
     };
@@ -62,6 +62,7 @@ pub fn init_logger() {
         .log_to_file_and_writer(log_file_path, Box::new(CustomWriter))
         .rotate(
             Criterion::Size(10 * 1024 * 1024),
+            // Criterion::Size(1024),
             Naming::Timestamps,
             Cleanup::KeepLogFiles(10),
         )
@@ -85,6 +86,7 @@ pub fn get_logger_handle() -> &'static Mutex<LoggerHandle> {
 fn test_flexi_logger() {
     init_logger();
     info!("user phone number is 13312341234,ip address is 127.0.0.1");
+    // tracing::info!("user phone number is 13312341234,ip address is 127.0.0.1");
     // let test_1k_data: String = std::iter::repeat("x").take(1024).collect();
     // info!("test_1k_data: {}", test_1k_data);
 }
