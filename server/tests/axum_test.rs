@@ -1,5 +1,16 @@
-use std::error::Error;
 use serde_json::Value;
+use std::error::Error;
+
+#[tokio::test]
+async fn test_root() -> Result<(), Box<dyn Error>> {
+    let client = reqwest::Client::new();
+    let res = client.get("http://localhost:3000/").send().await?;
+    let body = res.text().await?;
+
+    assert_eq!(body, "Hello,This Server Root!");
+
+    Ok(())
+}
 
 #[tokio::test]
 async fn send_post_data() -> Result<(), Box<dyn Error>> {
@@ -24,7 +35,9 @@ async fn send_post_data() -> Result<(), Box<dyn Error>> {
         .send()
         .await?;
 
-    println!("Response: {:?}", res);
+    let body = res.text().await?;
+
+    println!("Response body is : {:?}", body);
 
     Ok(())
 }
