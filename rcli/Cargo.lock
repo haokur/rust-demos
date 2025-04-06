@@ -825,7 +825,6 @@ dependencies = [
  "inquire",
  "lazy_static",
  "log",
- "once_cell",
  "regex",
  "serde",
  "simplelog",

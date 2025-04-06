@@ -3,7 +3,6 @@ use std::fs::File;
 use std::time::Duration;
 use tokio::time::sleep;
 use tracing::{Level, debug, error, event, info, info_span, instrument, span, warn};
-use tracing_log::LogTracer;
 use tracing_subscriber::filter::LevelFilter;
 use tracing_subscriber::fmt::format::FmtSpan;
 use tracing_subscriber::fmt::writer::MakeWriterExt;

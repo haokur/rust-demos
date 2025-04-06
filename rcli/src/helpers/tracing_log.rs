@@ -3,22 +3,24 @@ use crate::utils::text;
 use tracing::{Event, Subscriber};
 use tracing_appender::non_blocking;
 use tracing_appender::non_blocking::WorkerGuard;
-use tracing_subscriber::fmt::format::Writer;
-use tracing_subscriber::fmt::time::ChronoLocal;
-use tracing_subscriber::fmt::{FmtContext, FormatEvent, FormatFields};
+use tracing_subscriber::fmt::{
+    FmtContext, FormatEvent, FormatFields, format::Writer, time::ChronoLocal,
+};
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::registry::LookupSpan;
 use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::{EnvFilter, Layer, Registry};
 
 // tracing 记录事件/跨度。
+// tracing-appender：专注日志的异步写入和文件管理
 // tracing-subscriber 决定如何收集和处理这些数据（如输出到控制台）。
 // tracing-log 可选地将传统 log 日志转发到 tracing。
 // tracing-test 在测试中验证日志行为。
-// tracing-appender：专注日志的异步写入和文件管理
 
 pub struct RedactingFormatter;
 
+// 谨慎使用，每个日志都要走脱敏格式化，损耗性能，直接在调用info!等时脱敏传入
+// 或者使用safe_info!等
 impl<S, N> FormatEvent<S, N> for RedactingFormatter
 where
     S: Subscriber + for<'a> LookupSpan<'a>,
@@ -55,7 +57,6 @@ pub fn init_logger() -> WorkerGuard {
         .with_line_number(false)
         .with_file(false)
         .with_target(false)
-        .event_format(RedactingFormatter)
         .with_filter(EnvFilter::from("info"));
 
     let stderr_layer = tracing_subscriber::fmt::layer()
