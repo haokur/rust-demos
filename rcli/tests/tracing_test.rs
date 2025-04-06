@@ -24,6 +24,9 @@ fn test_tracing() {
     info!(user_id, action, "user performed action");
 
     event!(Level::INFO, user_id, action, "user performed action");
+
+    log::info!("starting up");
+    log::info!("user phone number is 13312341234,ip address is 127.0.0.1");
 }
 
 fn validate_order() {
