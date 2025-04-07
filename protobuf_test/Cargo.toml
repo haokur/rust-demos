@@ -1,0 +1,13 @@
+[package]
+name = "protobuf_test"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = {version = "1.44.2", features = ["full", "rt-multi-thread"]}
+prost = "0.13.5"
+tonic = "0.13.0"
+
+[build-dependencies]
+tonic-build = "0.13.0"
+prost-build = "0.13.5"

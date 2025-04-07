@@ -36,6 +36,7 @@ pub async fn set<T: redis::ToRedisArgs + Send + Sync>(
     Ok(())
 }
 
+#[allow(dead_code)]
 pub async fn delete(key: &str) -> Result<(), redis::RedisError> {
     let arc_con = REDIS_POOL.get().unwrap().clone();
     let pool = arc_con.lock().await;
