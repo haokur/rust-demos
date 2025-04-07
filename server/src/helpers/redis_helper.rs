@@ -36,6 +36,14 @@ pub async fn set<T: redis::ToRedisArgs + Send + Sync>(
     Ok(())
 }
 
+pub async fn delete(key: &str) -> Result<(), redis::RedisError> {
+    let arc_con = REDIS_POOL.get().unwrap().clone();
+    let pool = arc_con.lock().await;
+    let _: () = pool.clone().del(key).await?;
+
+    Ok(())
+}
+
 #[tokio::test]
 async fn test_get() {
     init().await.expect("TODO: panic message");
@@ -49,4 +57,10 @@ async fn test_set() {
     set("my_key", "my_value2").await.unwrap();
     let result: String = get("my_key").await.unwrap();
     println!("my_key is {}", result);
+}
+
+#[tokio::test]
+async fn test_delete() {
+    init().await.unwrap();
+    delete("my_test_key").await.unwrap();
 }
