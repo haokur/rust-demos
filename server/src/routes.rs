@@ -1,4 +1,6 @@
-use crate::handlers::test::{get_path, get_users, post_data, put_some, query, root};
+use crate::handlers::test::{
+    get_my_redis_key, get_path, get_users, post_data, put_some, query, root, set_my_redis_key,
+};
 use axum::Router;
 use axum::http::HeaderName;
 use axum::routing::{get, post, put};
@@ -25,6 +27,8 @@ pub fn app() -> Router {
         .route("/post_data", post(post_data))
         .route("/put_some", put(put_some))
         .route("/get_users", get(get_users))
+        .route("/get_my_redis_key", get(get_my_redis_key))
+        .route("/set_my_redis_key", get(set_my_redis_key))
         .layer(TraceLayer::new_for_http())
         .layer(cors)
 }

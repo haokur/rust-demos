@@ -8,7 +8,7 @@ reqwest = "0.12.15"
 axum = "0.8.3"
 config = "0.15.11"
 sqlx = {version = "0.8.3", features = ["mysql", "time","runtime-tokio-native-tls"]}
-redis_rs = "0.9.0"
+redis = {version = "0.29.5", features = ["tokio-comp"] }
 kafka = "0.10.0"
 tokio-tungstenite = "0.26.2"
 tonic = "0.13.0"

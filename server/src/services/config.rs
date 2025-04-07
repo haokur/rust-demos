@@ -5,6 +5,7 @@ use serde::Deserialize;
 pub struct Config {
     pub server: Server,
     pub database: Database,
+    pub redis: RedisConfig,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -20,6 +21,11 @@ pub struct Database {
     pub mysql_user: String,
     pub mysql_password: String,
     pub mysql_database: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct RedisConfig {
+    pub url: String,
 }
 
 lazy_static! {

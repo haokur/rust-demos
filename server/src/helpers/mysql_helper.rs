@@ -4,7 +4,7 @@ use std::sync::OnceLock;
 
 static DB_POOL: OnceLock<Pool<sqlx::MySql>> = OnceLock::new();
 
-pub async fn init_db_pool() -> Result<(), sqlx::Error> {
+pub async fn init() -> Result<(), sqlx::Error> {
     let host = &*CONFIG.database.mysql_host;
     let port = &*CONFIG.database.mysql_port;
     let user = &*CONFIG.database.mysql_user;
@@ -16,15 +16,13 @@ pub async fn init_db_pool() -> Result<(), sqlx::Error> {
         user, password, host, port, dbname
     );
 
-    let pool: Pool<sqlx::MySql> = Pool::connect(&url)
-        .await
-        .expect("failed to connect to mysql database");
+    let pool: Pool<sqlx::MySql> = Pool::connect(&url).await?;
 
-    DB_POOL.set(pool).expect("failed to init mysql database");
+    DB_POOL.set(pool).expect("TODO: panic message");
 
     Ok(())
 }
 
-pub fn get_pool() -> &'static Pool<sqlx::MySql> {
+pub fn instance() -> &'static Pool<sqlx::MySql> {
     DB_POOL.get().expect("failed to get mysql pool")
 }
