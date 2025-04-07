@@ -6,7 +6,8 @@ edition = "2024"
 [dependencies]
 reqwest = "0.12.15"
 axum = "0.8.3"
-sqlx = "0.8.3"
+config = "0.15.11"
+sqlx = {version = "0.8.3", features = ["mysql", "time","runtime-tokio-native-tls"]}
 redis_rs = "0.9.0"
 kafka = "0.10.0"
 tokio-tungstenite = "0.26.2"
@@ -15,8 +16,8 @@ tokio = { version = "1.44.2", features = ["full", "rt-multi-thread"] }
 serde = "1.0.219"
 prost = "0.13.5"
 serde_yaml = "0.9.33"
-toml = "0.8.20"
 tower = "0.5.2"
-tower-http = { version = "0.6.2", features = ["trace"] }
+tower-http = { version = "0.6.2", features = ["trace","cors"] }
 serde_json = "1.0.140"
 tracing-subscriber = "0.3.19"
+lazy_static = "1.5.0"

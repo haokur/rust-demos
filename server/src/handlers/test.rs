@@ -27,3 +27,7 @@ pub async fn post_data(Json(payload): Json<serde_json::Value>) -> String {
 
     result
 }
+
+pub async fn put_some() -> String {
+    "can't do put".to_string()
+}

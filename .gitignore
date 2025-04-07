@@ -4,3 +4,5 @@
 my_log.txt
 
 **/logs/*
+**/**/prod.yml
+**/**/.env

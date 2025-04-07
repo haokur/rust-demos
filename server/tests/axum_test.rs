@@ -13,6 +13,17 @@ async fn test_root() -> Result<(), Box<dyn Error>> {
 }
 
 #[tokio::test]
+async fn test_put_some() -> Result<(), Box<dyn Error>> {
+    let client = reqwest::Client::new();
+    let res = client.put("http://localhost:3000/put_some").send().await?;
+    let body = res.text().await?;
+
+    assert_eq!(body, "can't do put");
+
+    Ok(())
+}
+
+#[tokio::test]
 async fn send_post_data() -> Result<(), Box<dyn Error>> {
     let client = reqwest::Client::new();
     let data = r#"
