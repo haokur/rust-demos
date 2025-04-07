@@ -3,7 +3,6 @@ use crate::helpers::redis_helper;
 use crate::models::user::User;
 use axum::Json;
 use axum::extract::{Path, Query};
-use redis::AsyncCommands;
 use serde::{Deserialize, Serialize};
 use sqlx::query_as;
 use std::collections::HashMap;
@@ -34,18 +33,19 @@ pub async fn get_users() -> String {
 
 // http://localhost:3000/get_my_redis_key
 pub async fn get_my_redis_key() -> String {
-    let result: i32 = redis_helper::instance().get("my_key").await.unwrap();
-
-    format!("my_key in redis value is {}", result)
+    let result: String = redis_helper::get("my_key").await.unwrap();
+    result
 }
 
 // http://localhost:3000/set_my_redis_key?value=1123
 pub async fn set_my_redis_key(Query(params): Query<HashMap<String, String>>) -> String {
     let value = params.get("value").unwrap();
-    let mut instance = redis_helper::instance();
-    let _: () = instance.set("my_test_key", value).await.unwrap();
 
-    let result: String = instance.get("my_test_key").await.unwrap();
+    redis_helper::set("my_test_key", value)
+        .await
+        .expect("TODO: panic message");
+
+    let result: String = redis_helper::get("my_test_key").await.unwrap();
 
     result.to_string()
 }
