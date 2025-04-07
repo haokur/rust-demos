@@ -1,6 +1,7 @@
 use sqlx::types::time::PrimitiveDateTime;
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct User {
     pub id: i32,
     pub username: Option<Vec<u8>>,

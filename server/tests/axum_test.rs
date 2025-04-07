@@ -52,3 +52,14 @@ async fn send_post_data() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
+#[tokio::test]
+async fn test_get_users() -> Result<(), Box<dyn Error>> {
+    let client = reqwest::Client::new();
+    let res = client.put("http://localhost:3000/get_users").send().await?;
+    let body = res.text().await?;
+
+    println!("Response body is : {:?}", body);
+
+    Ok(())
+}
