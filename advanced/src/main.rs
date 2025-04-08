@@ -8,6 +8,7 @@ mod other;
 mod async_test;
 mod cell_lock;
 mod data_package;
+mod lifecycle;
 
 fn main() {
     println!("Hello, world!");
