@@ -1,0 +1,23 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=RustRover
+
+### GET
+GET http://localhost:3000/get_my_redis_key
+
+### GET 解析路径参数
+GET http://localhost:3000/path/123456
+
+### 解析query参数
+GET http://localhost:3000/query?username=haokur&job=web
+
+### POST请求
+POST http://localhost:3000/post_data
+Content-Type: application/json
+
+{
+  "name": "jack"
+}
+
+### socket
+WEBSOCKET ws://localhost:3000/ws

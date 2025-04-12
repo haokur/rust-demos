@@ -1,6 +1,7 @@
 use crate::handlers::test::{
     get_my_redis_key, get_path, get_users, post_data, put_some, query, root, set_my_redis_key,
 };
+use crate::socket::socket::handle_socket;
 use axum::Router;
 use axum::http::HeaderName;
 use axum::routing::{get, post, put};
@@ -21,6 +22,7 @@ pub fn app() -> Router {
         .allow_headers(allow_headers);
 
     Router::new()
+        .route("/ws", get(handle_socket))
         .route("/", get(root))
         .route("/path/{user_id}", get(get_path))
         .route("/query", get(query))

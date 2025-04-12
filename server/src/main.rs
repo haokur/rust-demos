@@ -17,6 +17,7 @@ mod models;
 mod routes;
 mod services;
 mod utils;
+mod socket;
 
 mod pb {
     tonic::include_proto!("hello");
@@ -41,21 +42,20 @@ async fn test_kafka() {
 #[tokio::main]
 async fn main() {
     let _guard = helpers::logger_helper::init_logger("server");
-    info!("Logger initialized");
 
-    // let server_host = &*CONFIG.server.host;
-    // let server_port = CONFIG.server.port;
-    // let server_url = format!("{}:{}", server_host, server_port);
-    // let listener = tokio::net::TcpListener::bind(server_url).await.unwrap();
-    //
-    // helpers::mysql_helper::init()
-    //     .await
-    //     .expect("mysql init failed");
-    //
-    // helpers::redis_helper::init()
-    //     .await
-    //     .expect("redis init failed");
-    //
-    // let app = routes::app();
-    // axum::serve(listener, app).await.unwrap();
+    let server_host = &*CONFIG.server.host;
+    let server_port = CONFIG.server.port;
+    let server_url = format!("{}:{}", server_host, server_port);
+    let listener = tokio::net::TcpListener::bind(&server_url).await.unwrap();
+
+    helpers::mysql_helper::init()
+        .await
+        .expect("mysql init failed");
+
+    helpers::redis_helper::init()
+        .await
+        .expect("redis init failed");
+
+    let app = routes::app();
+    axum::serve(listener, app).await.unwrap();
 }
