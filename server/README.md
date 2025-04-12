@@ -16,5 +16,5 @@ cargo build
 ```
 
 2. grpc/client.rs 中定义连接 client 的方法
-3. 启动 go 写的 grpc 的服务端，项目代码在 golang-about/protobuf-test
+3. 启动 go 写的 grpc 的服务端，项目代码在 [golang-about/protobuf-test](https://github.com/haokur/golang-about/tree/main/protobuf-test)
 4. 运行 grpc/client.rs 里的测试用例
