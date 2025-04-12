@@ -1,3 +1,3 @@
-pub mod logger;
 pub mod config;
 pub mod query;
+pub mod grpc_service;

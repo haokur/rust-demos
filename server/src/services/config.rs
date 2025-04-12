@@ -3,6 +3,7 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Config {
+    pub env: String, // production ,development
     pub server: Server,
     pub database: Database,
     pub redis: RedisConfig,
