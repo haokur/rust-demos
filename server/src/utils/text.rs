@@ -1,4 +1,3 @@
-use crate::utils::regex_util;
 use crate::utils::regex_util::{ip_regex_desensitization, phone_regex_desensitization};
 use tracing::info;
 
@@ -8,6 +7,8 @@ use tracing::info;
 fn test_is_subsequence() {
     assert_eq!(is_subsequence("azb1c66", "abc"), true);
 }
+
+#[allow(dead_code)]
 pub fn is_subsequence(haystack: &str, needle: &str) -> bool {
     if haystack.is_empty() {
         return true;
@@ -29,6 +30,8 @@ fn test_highlight_subsequence() {
     println!("{}", highlight_subsequence("azb1c66", "abc"))
 }
 // 高亮显示匹配的子序列部分
+
+#[allow(dead_code)]
 pub fn highlight_subsequence(haystack: &str, needle: &str) -> String {
     let mut result = String::new();
     let mut needle_iter = needle.chars();
@@ -50,6 +53,7 @@ fn test_remove_ansi_escape_codes() {
     println!("{}", remove_ansi_escape_codes(&ansi_str));
 }
 
+#[allow(dead_code)]
 pub fn remove_ansi_escape_codes(s: &str) -> String {
     let ansi_escape_regex = regex::Regex::new(r"\x1b\[[0-9;]*m").unwrap();
     ansi_escape_regex.replace_all(s, "").to_string()
@@ -75,6 +79,8 @@ fn test_pad_left() {
     assert_eq!("0001", pad_left("1", 4, '0'));
     assert_eq!("***1", pad_left("1", 4, '*'));
 }
+
+#[allow(dead_code)]
 pub fn pad_left(input: &str, total_length: usize, pad_char: char) -> String {
     let padding = total_length.saturating_sub(input.len());
     let pad_str = pad_char.to_string().repeat(padding);

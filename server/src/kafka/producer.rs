@@ -3,7 +3,6 @@ use rdkafka::config::ClientConfig;
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use std::time::Duration;
 use tracing::info;
-use tracing_subscriber::fmt::format;
 
 // 测试生产消息发布给kafka
 #[tokio::test]

@@ -6,14 +6,16 @@ use std::sync::OnceLock;
 use std::thread;
 use tonic::transport::Channel;
 
+#[allow(dead_code)]
 static GRPC_CLIENT: OnceLock<HelloServiceClient<Channel>> = OnceLock::new();
 
+#[allow(dead_code)]
 pub async fn get_client() -> Result<HelloServiceClient<Channel>, Box<dyn std::error::Error>> {
     match GRPC_CLIENT.get() {
         Some(client) => Ok(client.clone()),
         None => {
             println!("init client");
-            let mut client =
+            let client =
                 pb::hello_service_client::HelloServiceClient::connect("http://localhost:50051")
                     .await?;
             GRPC_CLIENT

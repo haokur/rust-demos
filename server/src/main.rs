@@ -1,12 +1,4 @@
-use crate::grpc::client;
-use crate::kafka::consumer::KafkaConsumer;
-use crate::kafka::producer::KafkaProducer;
-use crate::pb::hello_service_server::HelloService;
-use crate::pb::{HelloRequest, HelloResponse};
 use crate::services::config::CONFIG;
-use std::thread;
-use tonic::{Request, Response, Status};
-use tracing::info;
 
 mod grpc;
 mod handlers;
@@ -16,32 +8,15 @@ mod macros;
 mod models;
 mod routes;
 mod services;
-mod utils;
 mod socket;
+mod utils;
 
 mod pb {
     tonic::include_proto!("hello");
 }
 
-#[allow(dead_code)]
-async fn test_kafka() {
-    let producer = KafkaProducer::new("localhost:9092");
-    producer
-        .send("test_topic", "my_key", "hello from rust".as_ref())
-        .await;
-
-    let consumer = KafkaConsumer::new("localhost:9092", "my_group", &["test_topic"]);
-
-    consumer
-        .run(|key, value| {
-            println!("Got key: {:?}", key);
-        })
-        .await;
-}
-
 #[tokio::main]
 async fn main() {
-    // test_kafka().await;
     let _guard = helpers::logger_helper::init_logger("server");
 
     let server_host = &*CONFIG.server.host;

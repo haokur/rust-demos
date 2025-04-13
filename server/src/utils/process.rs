@@ -7,6 +7,7 @@ use sysinfo::{Pid, Process, System};
 
 use crate::utils::text;
 
+#[allow(dead_code)]
 pub fn with_ctrl_c_handler<F: FnOnce()>(main_logic: F, exit_message: Option<&str>) {
     let running = Arc::new(AtomicBool::new(true));
     let r = running.clone();
