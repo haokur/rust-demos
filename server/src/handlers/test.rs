@@ -1,11 +1,15 @@
 use crate::helpers::mysql_helper;
 use crate::helpers::redis_helper;
+use crate::kafka::consumer::KafkaConsumer;
+use crate::kafka::producer::KafkaProducer;
 use crate::models::user::User;
 use axum::Json;
 use axum::extract::{Path, Query};
+use chrono::Local;
 use serde::{Deserialize, Serialize};
 use sqlx::query_as;
 use std::collections::HashMap;
+use tracing::info;
 
 #[derive(Serialize, Deserialize)]
 struct MyResponse {
@@ -70,6 +74,32 @@ pub async fn post_data(Json(payload): Json<serde_json::Value>) -> String {
     let result = format!("Payload: {:?},name is {}", payload, name);
 
     result
+}
+
+// 生产kafka消息
+pub async fn producer_kafka_message() -> String {
+    let producer = KafkaProducer::new("localhost:9092");
+    let message_content = format!(
+        "hello from rust time is {}",
+        Local::now().format("%Y-%m-%d %H:%M:%S")
+    );
+
+    producer
+        .send("demo-topic", "my_key", message_content.as_ref())
+        .await;
+
+    info!("send kafka message:{}", message_content);
+
+    message_content
+}
+
+// 消费kafka消息
+// 这里的consumer内部是一个while循环，即开启后，就一直监听新的消息了（在timeout时间内）
+pub async fn consumer_kafka_message() {
+    let consumer = KafkaConsumer::new("localhost:9092", "my_group", &["demo-topic"]);
+    consumer
+        .run(move |key, value| info!("receive kafka message,key:{},value:{}", key, value))
+        .await;
 }
 
 pub async fn put_some() -> String {

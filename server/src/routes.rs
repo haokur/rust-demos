@@ -1,5 +1,6 @@
 use crate::handlers::test::{
-    get_my_redis_key, get_path, get_users, post_data, put_some, query, root, set_my_redis_key,
+    consumer_kafka_message, get_my_redis_key, get_path, get_users, post_data,
+    producer_kafka_message, put_some, query, root, set_my_redis_key,
 };
 use crate::socket::socket::handle_socket;
 use axum::Router;
@@ -23,6 +24,8 @@ pub fn app() -> Router {
 
     Router::new()
         .route("/ws", get(handle_socket))
+        .route("/producer_kafka_message", get(producer_kafka_message))
+        .route("/consumer_kafka_message", get(consumer_kafka_message))
         .route("/", get(root))
         .route("/path/{user_id}", get(get_path))
         .route("/query", get(query))

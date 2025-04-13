@@ -41,6 +41,7 @@ async fn test_kafka() {
 
 #[tokio::main]
 async fn main() {
+    // test_kafka().await;
     let _guard = helpers::logger_helper::init_logger("server");
 
     let server_host = &*CONFIG.server.host;

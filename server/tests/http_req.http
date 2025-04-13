@@ -21,3 +21,9 @@ Content-Type: application/json
 
 ### socket
 WEBSOCKET ws://localhost:3000/ws
+
+### 发送消息到kafka
+GET http://localhost:3000/producer_kafka_message
+
+### 消费kafka的消息
+GET http://localhost:3000/consumer_kafka_message
