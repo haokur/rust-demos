@@ -10,6 +10,8 @@ mod cell_lock;
 mod data_package;
 mod lifecycle;
 mod mutex_test;
+mod thread_test;
+mod helpers;
 
 fn main() {
     println!("Hello, world!");
