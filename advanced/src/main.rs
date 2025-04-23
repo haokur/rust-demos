@@ -12,6 +12,7 @@ mod lifecycle;
 mod mutex_test;
 mod thread_test;
 mod helpers;
+mod mpsc_test;
 
 fn main() {
     println!("Hello, world!");
